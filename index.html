@@ -1,0 +1,1705 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>AlphaNovel Growth Audit</title>
+<meta name="description" content="Five ideas to turn more AlphaNovel users into subscribers, each built into a clickable version of AlphaNovel's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — AlphaNovel's in-app colours, sampled off their recorded dark screens (brand.json "sampled"). */
+:root{
+  --b-primary:#7d6eff;               /* buttons, highlighted words */
+  --b-primary-ink:#ffffff;
+  --b-bg:#121013;                    /* quiz / reader / paywall background */
+  --b-surface:#201e21;               /* cards, pills, survey + loader background */
+  --b-ink:#ffffff;
+  --b-ink2:#a7a6a8;                  /* secondary text, "1/5" */
+  --b-line:#383639;                  /* dividers */
+  --b-accent2:#f295a8;               /* their pink: Buy More Now, Most Popular */
+  --b-deep:#292637;                  /* empty radio dots, loader ring track */
+  --b-lilac:#b6adef;                 /* selected topic text */
+  --b-fb:#1877f2;                    /* Continue with Facebook */
+  --b-hi:#f7f661;                    /* their --highlighter (stars) */
+  --b-grad:linear-gradient(180deg,#201e21,#121013);
+  --b-radius:10px;
+  --b-pill:9px;
+  --b-font:'Inter',-apple-system,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#04002d;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#f7f661;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(247,246,97,.6); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — AlphaNovel's own dark UI, measured off their recording (540 px frames × 0.69 = device points).
+   RULE: colours only via var(--b-*), or white/black with alpha. No au- classes here. */
+.scr{background:var(--b-bg)}
+.scr.s-soft{background:var(--b-surface)}
+.s-pad{flex:1;display:flex;flex-direction:column;padding:58px 24px 34px;position:relative;z-index:1;min-height:0}
+.s-x{position:absolute;top:56px;left:18px;width:30px;height:30px;background:none;border:0;padding:0;color:var(--b-ink);cursor:pointer;z-index:4;display:grid;place-items:center}
+.s-xb{position:absolute;top:11px;left:18px;width:30px;height:30px;background:none;border:0;padding:0;color:var(--b-ink);cursor:pointer;z-index:4;display:grid;place-items:center}
+.s-x svg,.s-xb svg{width:19px;height:19px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;fill:none}
+.s-cta{width:100%;border:0;border-radius:9px;background:var(--b-primary);color:var(--b-primary-ink);font:600 15px/1 var(--b-font);padding:15px 12px;cursor:pointer;letter-spacing:-.01em}
+.s-cta.s-pink{background:var(--b-accent2)}
+.s-hl{color:var(--b-primary)}
+.s-t{font:700 26px/1.2 var(--b-font);letter-spacing:-.02em;text-align:center;margin:0}
+.s-p{font:400 13.5px/1.4 var(--b-font);color:var(--b-ink);text-align:center;margin:10px 0 0}
+.s-head{display:flex;justify-content:center;align-items:center;position:relative;font:600 14.5px var(--b-font);margin-top:2px}
+.s-head em{position:absolute;right:0;font-style:normal;font-weight:400;color:var(--b-ink2);font-size:13px}
+.s-q{font:700 20px/1.3 var(--b-font);text-align:center;margin:22px 0 0;letter-spacing:-.01em}
+
+/* join (kept) */
+.s-join .s-art{width:92px;margin:auto auto 0;display:block}
+.s-join .s-t{margin-top:14px}
+.s-soc{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.s-soc button{display:flex;align-items:center;justify-content:center;gap:10px;height:44px;border-radius:8px;font:500 14.5px var(--b-font);cursor:pointer;border:0}
+.s-soc img{width:20px;height:20px;border-radius:3px}
+.s-fb{background:var(--b-fb);color:var(--b-ink)}
+.s-gg{background:var(--b-ink);color:var(--b-ink2);box-shadow:inset 0 0 0 1.5px var(--b-ink2)}
+.s-ap{background:var(--b-ink);color:var(--b-bg)}
+.s-mail{background:none!important;color:var(--b-primary);font-weight:600!important;height:auto!important;margin-top:6px}
+.s-fine{font:400 9.5px/1.5 var(--b-font);color:var(--b-ink2);text-align:center;margin:20px 0 0}
+.s-fine b{color:var(--b-ink);font-weight:500}
+
+/* survey intro (kept) */
+.s-duo{width:150px;display:block;margin:118px auto 0}
+.s-survey .s-t{margin-top:18px}
+.s-foot{margin-top:auto}
+.s-time{font:400 11px var(--b-font);text-align:center;margin:0 0 12px}
+
+/* language (kept, 1 of 2) */
+.s-tiles{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:auto 10px}
+.s-tile{background:var(--b-surface);border:2px solid transparent;border-radius:10px;height:146px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;color:var(--b-ink);font:400 13.5px var(--b-font);cursor:pointer;padding:0}
+.s-tile img{width:59px;height:59px}
+.s-tile.on{border-color:var(--b-primary)}
+
+/* topics (idea 5: 2 of 2) */
+.s-note{font:400 12.5px/1.4 var(--b-font);color:var(--b-ink2);text-align:center;margin:8px 0 0}
+.s-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 6px;margin:26px -8px 0}
+.s-pill{display:inline-flex;align-items:center;gap:8px;height:33px;padding:0 14px 0 9px;border-radius:999px;border:0;background:var(--b-surface);color:var(--b-ink);font:400 14px var(--b-font);cursor:pointer}
+.s-pill i{width:16px;height:16px;border-radius:50%;background:var(--b-deep);flex:none;display:grid;place-items:center}
+.s-pill.on{color:var(--b-lilac)}
+.s-pill.on i{background:var(--b-primary)}
+.s-pill.on i::after{content:"";width:6px;height:3px;border:solid var(--b-ink);border-width:0 0 1.6px 1.6px;transform:translateY(-1px) rotate(-45deg)}
+.s-cta:disabled{opacity:.45;cursor:default}
+
+/* loader (kept, lines personalised) */
+.s-load .s-t{font-size:17.5px;margin-top:18px}
+.s-ring{width:200px;height:200px;border-radius:50%;margin:118px auto 0;display:grid;place-items:center;background:conic-gradient(var(--b-primary) calc(var(--p,100) * 1%),var(--b-deep) 0)}
+.s-ring>div{width:186px;height:186px;border-radius:50%;background:var(--b-surface);display:grid;place-items:center}
+.s-ring>div>div{width:170px;height:170px;border-radius:50%;background:var(--b-deep);display:grid;place-items:center}
+.s-ring img{width:104px}
+.s-pct{font:400 12.5px var(--b-font);text-align:center;margin:18px 0 0}
+.s-lines{list-style:none;margin:22px auto 0;padding:0;display:flex;flex-direction:column;gap:9px;width:236px}
+.s-lines li{display:flex;align-items:center;gap:9px;font:400 12.5px var(--b-font);color:var(--b-ink2);opacity:.35;transition:opacity .3s}
+.s-lines li.on{opacity:1;color:var(--b-ink)}
+.s-lines li i{width:14px;height:14px;border-radius:50%;background:var(--b-deep);flex:none;display:grid;place-items:center}
+.s-lines li.on i{background:var(--b-primary)}
+.s-lines li.on i::after{content:"";width:6px;height:3px;border:solid var(--b-ink);border-width:0 0 1.6px 1.6px;transform:translateY(-1px) rotate(-45deg)}
+.s-mark{margin-top:auto;display:flex;justify-content:center;align-items:center;gap:6px;font:700 15px var(--b-font)}
+.s-mark img{width:21px;height:21px}
+
+/* novels for you (idea 2) */
+.s-bar{height:52px;margin-top:44px;display:flex;align-items:center;justify-content:center;font:600 15px var(--b-font);position:relative;border-bottom:1px solid var(--b-surface);flex:none}
+.s-why{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:14px 20px 0;font:400 12px var(--b-font);color:var(--b-ink2);align-items:center}
+.s-why b{font-weight:500;color:var(--b-lilac);background:var(--b-deep);border-radius:999px;padding:4px 10px}
+.s-car{position:relative;height:214px;margin-top:14px;flex:none}
+.s-car img{position:absolute;top:50%;border-radius:5px;object-fit:cover;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.s-car .s-c0{left:50%;width:154px;height:207px;transform:translate(-50%,-50%);z-index:2}
+.s-car .s-c1{left:-28px;width:112px;height:152px;transform:translateY(-50%);opacity:.9}
+.s-car .s-c2{right:-28px;width:112px;height:152px;transform:translateY(-50%);opacity:.9}
+.s-bk{font:700 16px var(--b-font);text-align:center;margin:14px 20px 0;letter-spacing:-.01em}
+.s-meta{font:400 11px var(--b-font);color:var(--b-ink2);text-align:center;margin:7px 0 0}
+.s-stats{display:grid;grid-template-columns:1fr 1px 1fr;background:var(--b-surface);border-radius:10px;margin:14px 15px 0;padding:11px 0;text-align:center;flex:none}
+.s-stats>i{background:var(--b-line)}
+.s-stats small{display:block;font:400 11px var(--b-font);color:var(--b-ink2)}
+.s-stats b{display:block;font:700 16px var(--b-font);margin-top:5px}
+.s-fit{margin:14px 15px 0;font:400 12.5px/1.45 var(--b-font);color:var(--b-ink2)}
+.s-fit b{color:var(--b-ink);font-weight:600}
+.s-bot{margin-top:auto;padding:0 24px 34px}
+
+/* first page (idea 1) */
+.s-bhead{display:flex;gap:12px;align-items:center;padding:6px 24px 14px;border-bottom:1px solid var(--b-surface);margin-bottom:10px}
+.s-bhead img{width:54px;height:72px;border-radius:4px;object-fit:cover;flex:none}
+.s-bhead b{display:block;font:700 14.5px/1.25 var(--b-font)}
+.s-bhead span{display:block;font:400 11px var(--b-font);color:var(--b-ink2);margin-top:4px}
+.s-prev{margin:16px 15px 0;position:relative;max-height:150px;overflow:hidden}
+.s-prev .s-ch{margin:0 0 8px}
+.s-prev p{font:400 14px/1.6 var(--b-font);color:var(--b-ink2);margin:0;text-indent:1.4em}
+.s-prev::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(rgba(18,16,19,0),var(--b-bg))}
+.s-next{font:400 11.5px var(--b-font);color:var(--b-ink2);text-align:center;margin:0 0 10px}
+.s-rbar{height:44px;margin-top:48px;display:flex;align-items:center;padding:0 16px;gap:12px;flex:none}
+.s-rbar button{background:none;border:0;padding:0;color:var(--b-ink);cursor:pointer;display:grid;place-items:center}
+.s-rbar svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.s-rbar span{font:500 12.5px var(--b-font);color:var(--b-ink2);margin-right:auto}
+.s-page{padding:4px 24px 0;position:relative;flex:1;min-height:0;overflow:hidden}
+.s-ch{font:700 15px var(--b-font);margin:6px 0 12px;letter-spacing:.01em}
+.s-txt p{font:400 16px/1.65 var(--b-font);color:var(--b-ink);margin:0 0 12px;text-indent:1.4em}
+.s-page::after{content:"";position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(rgba(18,16,19,0),var(--b-bg) 80%)}
+.s-lock{background:var(--b-surface);border-radius:16px 16px 0 0;padding:18px 20px 34px;flex:none;position:relative;z-index:2}
+.s-lock h3{font:700 17px/1.3 var(--b-font);margin:0;text-align:center}
+.s-lock p{font:400 12.5px/1.45 var(--b-font);color:var(--b-ink2);margin:6px 0 0;text-align:center}
+.s-plusrow{display:flex;align-items:center;gap:11px;background:var(--b-bg);border-radius:10px;padding:10px 12px;margin:14px 0}
+.s-plusrow img{width:38px;height:38px;border-radius:9px}
+.s-plusrow b{display:block;font:600 13.5px var(--b-font)}
+.s-plusrow span{display:block;font:400 11.5px var(--b-font);color:var(--b-ink2);margin-top:2px}
+.s-plusrow em{margin-left:auto;font:700 10px var(--b-font);font-style:normal;color:var(--b-bg);background:var(--b-accent2);border-radius:999px;padding:3px 8px;white-space:nowrap}
+
+/* paywall (idea 3) — their Plus layout */
+.s-pw{padding:54px 15px 0;flex:1;display:flex;flex-direction:column;min-height:0}
+.s-pico{width:74px;height:74px;border-radius:17px;display:block;margin:34px auto 0}
+.s-pname{font:700 20px var(--b-font);text-align:center;margin:10px 0 0;display:flex;justify-content:center;align-items:center;gap:5px;letter-spacing:-.01em}
+.s-pname img{width:16px;height:16px;border-radius:4px}
+.s-psub{font:400 12.5px/1.4 var(--b-font);text-align:center;margin:7px 12px 0}
+.s-psub b{font-weight:600}
+.s-proof{display:flex;justify-content:center;align-items:center;gap:6px;margin:9px 0 0;font:500 11.5px var(--b-font);color:var(--b-ink2)}
+.s-proof i{font-style:normal;color:var(--b-hi);letter-spacing:1px;font-size:12px}
+.s-proof b{color:var(--b-ink);font-weight:600}
+.s-bens{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.s-ben{display:flex;align-items:center;gap:12px;background:var(--b-surface);border-radius:10px;padding:8px 10px}
+.s-ben img{width:48px;height:48px;border-radius:50%;flex:none}
+.s-ben b{display:block;font:600 15px var(--b-font);letter-spacing:-.01em}
+.s-ben span{display:block;font:400 11.5px/1.35 var(--b-font);color:var(--b-ink2);margin-top:2px}
+.s-ben span em{font-style:normal;color:var(--b-ink)}
+.s-pfoot{margin-top:auto;background:var(--b-surface);padding:12px 16px 24px;border-radius:14px 14px 0 0;margin-inline:-15px}
+.s-terms{font:400 11px var(--b-font);text-align:center;margin:0 0 10px;color:var(--b-ink);white-space:nowrap}
+.s-terms span{color:var(--b-ink2)}
+.s-legal{display:flex;justify-content:center;gap:18px;font:500 9.5px var(--b-font);margin-top:11px;padding-top:9px;border-top:1px solid var(--b-line)}
+.s-tl{display:flex;justify-content:space-between;margin:0 2px 10px;position:relative}
+.s-tl::before{content:"";position:absolute;left:8%;right:8%;top:5px;height:2px;background:var(--b-line)}
+.s-tl div{position:relative;text-align:center;flex:1;font:400 10px/1.3 var(--b-font);color:var(--b-ink2)}
+.s-tl div i{display:block;width:12px;height:12px;border-radius:50%;background:var(--b-deep);margin:0 auto 5px;box-shadow:0 0 0 3px var(--b-surface)}
+.s-tl div:first-child i{background:var(--b-primary)}
+.s-tl div b{display:block;color:var(--b-ink);font-weight:600;font-size:10.5px}
+
+/* offer on close (idea 4) — their Top Up card style */
+.s-sheet{margin-top:auto;background:var(--b-surface);border-radius:18px 18px 0 0;padding:20px 20px 34px;position:relative}
+.s-sheet .s-x{top:14px;left:14px}
+.s-dim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.scr.sheet{background:transparent}
+.s-off-k{font:600 12px var(--b-font);color:var(--b-accent2);text-align:center;margin:8px 0 0;letter-spacing:.02em}
+.s-off-t{font:700 20px/1.25 var(--b-font);text-align:center;margin:6px 0 0;letter-spacing:-.01em}
+.s-pack{margin:16px 0 0;border-radius:12px;background:var(--b-accent2);color:var(--b-bg);padding:14px 16px;position:relative;display:flex;align-items:center;gap:12px}
+.s-pack img{width:48px;height:48px;border-radius:11px;flex:none}
+.s-pack b{display:block;font:700 15px var(--b-font)}
+.s-pack span{display:block;font:500 11.5px var(--b-font);margin-top:2px}
+.s-pack strong{margin-left:auto;font:700 19px var(--b-font);white-space:nowrap}
+.s-pack em{position:absolute;top:-8px;left:12px;font:700 9.5px var(--b-font);font-style:normal;background:var(--b-bg);color:var(--b-accent2);border-radius:5px;padding:2px 7px}
+.s-offl{list-style:none;padding:0;margin:14px 0 16px;display:flex;flex-direction:column;gap:8px}
+.s-offl li{display:flex;gap:9px;align-items:center;font:400 12.5px/1.35 var(--b-font)}
+.s-offl li img{width:26px;height:26px;border-radius:50%;flex:none}
+.s-cf{font:400 9.5px/1.4 var(--b-font);color:var(--b-ink2);text-align:center;margin:10px 0 0}
+
+/* all set (kept) */
+.s-done .s-pw{padding-top:54px}
+.s-done .s-bens{margin-top:16px}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· AlphaNovel</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · September 2026</p>
+    <h1 class="au-display">AlphaNovel</h1>
+    <p class="au-lede">Five ideas to turn more readers into Plus subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the AlphaNovel team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at AlphaNovel.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at AlphaNovel. We took <b>your own screens, copy and prices</b> from your live iOS flow and App Store listing, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is AlphaNovel’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: what you ask, what a new reader reads first, and what happens when they say no to Plus.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Yellow numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — AlphaNovel's onboarding → Plus paywall → offer on close. Kept screens carry their copy verbatim
+     (ScreensDesign recording of the live iOS app); data-t = translatable (Spanish in CONTENT.i18n.es). -->
+
+<section class="scr s-join" data-id="join">
+  <button class="s-x" data-go="survey" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  <div class="s-pad">
+    <img class="s-art" src="assets/crop/reader.png" alt="">
+    <h1 class="s-t" data-t="join_t"><span class="s-hl">Join</span> to AlphaNovel</h1>
+    <p class="s-p" data-t="join_p">Enjoy a selection of the best contemporary novels</p>
+    <div class="s-soc">
+      <button class="s-fb" data-go="survey"><img src="assets/crop/ic-fb.png" alt=""><span data-t="join_fb">Continue with Facebook</span></button>
+      <button class="s-gg" data-go="survey"><img src="assets/crop/ic-google.png" alt=""><span data-t="join_gg">Continue with Google</span></button>
+      <button class="s-ap" data-go="survey"><img src="assets/crop/ic-apple.png" alt=""><span data-t="join_ap">Continue with Apple</span></button>
+      <button class="s-mail" data-go="survey"><span data-t="join_mail">Continue with email</span></button>
+    </div>
+    <p class="s-fine"><span data-t="join_f1">By continuing, I agree with the</span><br><b data-t="join_f2">Privacy Policy / Terms &amp; Conditions</b></p>
+  </div>
+</section>
+
+<section class="scr s-soft s-survey" data-id="survey">
+  <div class="s-pad">
+    <img class="s-duo" src="assets/crop/duo.png" alt="">
+    <h1 class="s-t" data-t="sv_t">Hi, <span class="s-hl">Good</span> to see you on <span class="s-hl">AlphaNovel!</span></h1>
+    <p class="s-p" data-t="sv_p">Take a short questionnaire so that we can recommend the most suitable novels for you.</p>
+    <div class="s-foot">
+      <p class="s-time" data-t="sv_time">It will take no more than ⏱ 1 minute</p>
+      <button class="s-cta" data-go="lang"><span data-t="sv_cta">Start Survey!</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr" data-id="lang">
+  <div class="s-pad">
+    <div class="s-head"><span data-t="about">About you</span><em>1/2</em></div>
+    <h2 class="s-q" data-t="lang_q">What language do you want to read novels in?</h2>
+    <div class="s-tiles">
+      <button class="s-tile" data-setlang="en"><img src="assets/crop/flag-en.png" alt="">English</button>
+      <button class="s-tile" data-setlang="es"><img src="assets/crop/flag-es.png" alt="">Español</button>
+    </div>
+    <button class="s-cta" data-go="topics"><span data-t="cont">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr" data-id="topics">
+  <div class="s-pad">
+    <div class="s-head"><span data-t="prefs">Your preferences</span><em>2/2</em></div>
+    <h2 class="s-q" data-t="top_q">What topics are close to you?</h2>
+    <p class="s-note" data-t="top_note">Pick a few and we’ll open your first novel on the next screen.</p>
+    <div class="s-pills">
+      <button class="s-pill" data-toggle="topics:teen"><i></i><span data-t="tp_teen">Teen</span></button>
+      <button class="s-pill" data-toggle="topics:imposter"><i></i><span data-t="tp_imposter">Imposter</span></button>
+      <button class="s-pill" data-toggle="topics:billionaire"><i></i><span data-t="tp_billionaire">Billionaire</span></button>
+      <button class="s-pill" data-toggle="topics:erotic"><i></i><span data-t="tp_erotic">Erotic</span></button>
+      <button class="s-pill" data-toggle="topics:boss"><i></i><span data-t="tp_boss">Boss / CEO</span></button>
+      <button class="s-pill" data-toggle="topics:abusive"><i></i><span data-t="tp_abusive">Abusive Love</span></button>
+      <button class="s-pill" data-toggle="topics:pack"><i></i><span data-t="tp_pack">Pack</span></button>
+      <button class="s-pill" data-toggle="topics:weak"><i></i><span data-t="tp_weak">Weak to Strong</span></button>
+      <button class="s-pill" data-toggle="topics:werewolf"><i></i><span data-t="tp_werewolf">Werewolf</span></button>
+      <button class="s-pill" data-toggle="topics:badboy"><i></i><span data-t="tp_badboy">Badboy</span></button>
+      <button class="s-pill" data-toggle="topics:reunion"><i></i><span data-t="tp_reunion">Reunion</span></button>
+      <button class="s-pill" data-toggle="topics:goodgirl"><i></i><span data-t="tp_goodgirl">Good Girl</span></button>
+      <button class="s-pill" data-toggle="topics:sweet"><i></i><span data-t="tp_sweet">Sweet</span></button>
+      <button class="s-pill" data-toggle="topics:bdsm"><i></i>BDSM</button>
+      <button class="s-pill" data-toggle="topics:luna"><i></i>Luna</button>
+      <button class="s-pill" data-toggle="topics:powerful"><i></i><span data-t="tp_powerful">Powerful Couple</span></button>
+    </div>
+    <button class="s-cta" style="margin-top:auto" data-requires="topics" data-go="loader"><span data-t="cont">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr s-soft s-load" data-id="loader">
+  <div class="s-pad">
+    <h1 class="s-t" data-t="ld_t">Picking the right novels for you</h1>
+    <div class="s-ring" id="ldRing"><div><div><img src="assets/crop/book.png" alt=""></div></div></div>
+    <p class="s-pct"><span id="ldPct">100</span><span data-t="ld_pct">% of novels analyzed...</span></p>
+    <ul class="s-lines" id="ldLines"><li><i></i><span></span></li><li><i></i><span></span></li><li><i></i><span></span></li></ul>
+    <div class="s-mark"><img src="assets/crop/fox-sm.png" alt="">Alphanovel</div>
+  </div>
+</section>
+
+<section class="scr" data-id="picks">
+  <div class="s-bar"><button class="s-xb" data-go="teaser" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button><span data-t="pk_bar">Novels for you</span></div>
+  <div class="s-why"><span data-t="pk_why">Because you picked</span><span id="pkTopics"></span></div>
+  <div class="s-car"><img class="s-c1" id="pkC1" src="assets/crop/cover-devil.png" alt=""><img class="s-c0" id="pkC0" src="assets/crop/cover-lycan.png" alt=""><img class="s-c2" id="pkC2" src="assets/crop/cover-virgin.png" alt=""></div>
+  <div class="s-bk js-title">Chosen By The Lycan Prince</div>
+  <div class="s-meta js-meta">Romance | 103 Chapters | Ongoing | 18+</div>
+  <div class="s-stats"><div><small data-t="views">Views</small><b class="js-views">13K</b></div><i></i><div><small data-t="rating">Rating</small><b class="js-rate">6.0</b></div></div>
+  <p class="s-fit js-fit"></p>
+  <div class="s-prev"><div class="s-ch js-ch">CHAPTER ONE</div><div class="js-first"></div></div>
+  <div class="s-bot"><button class="s-cta" data-go="teaser"><span data-t="pk_cta">Continue Reading</span></button></div>
+</section>
+
+<section class="scr" data-id="teaser">
+  <div class="s-rbar"><button data-back aria-label="Back"><svg viewBox="0 0 20 20"><path d="M12.5 4l-6 6 6 6"/></svg></button><span class="js-title">Chosen By The Lycan Prince</span></div>
+  <div class="s-page"><div class="s-bhead"><img class="js-cover" src="assets/crop/cover-lycan.png" alt=""><div><b class="js-title">Chosen By The Lycan Prince</b><span class="js-meta">Romance | 103 Chapters | Ongoing | 18+</span></div></div><div class="s-ch js-ch">CHAPTER ONE</div><div class="s-txt js-excerpt"></div></div>
+  <div class="s-lock">
+    <h3 data-t="tz_t">Want to know what happens next?</h3>
+    <p data-t="tz_p">Chapter one is on us. Plus doubles the coins you earn every day, so the next chapters are too.</p>
+    <div class="s-plusrow"><img src="assets/crop/plus-icon.png" alt=""><div><b>AlphaNovel Plus</b><span data-t="tz_row">3 free days · doubled daily coins</span></div><em data-t="tz_free">FREE</em></div>
+    <button class="s-cta" data-go="paywall"><span data-t="pk_cta">Continue Reading</span></button>
+  </div>
+</section>
+
+<section class="scr" data-id="paywall">
+  <button class="s-x" data-go="offer" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  <div class="s-pw">
+    <img class="s-pico" src="assets/crop/plus-icon.png" alt="">
+    <div class="s-pname">AlphaNovel <span class="s-hl">Plus</span><img src="assets/crop/plus-badge.png" alt=""></div>
+    <p class="s-psub"><span data-t="pw_sub1">Keep reading</span> <b class="js-title">Chosen By The Lycan Prince</b><span data-t="pw_sub2">, with doubled bonuses on every novel.</span></p>
+    <div class="s-proof"><i>★★★★★</i><b class="js-rating">4.7</b><span class="js-count" data-t="pw_count">· 84K ratings on the App Store</span></div>
+    <div class="s-bens">
+      <div class="s-ben"><img src="assets/crop/b-x2.png" alt=""><div><b data-t="b1">Doubled Daily Reading</b><span data-t="b1s">Up to 3900 coins from daily reading: <em>about 350 chapters</em>.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-x2y.png" alt=""><div><b data-t="b2">Doubled Daily Check-in</b><span data-t="b2s">Up to 1240 coins from daily check-in: <em>about 110 more</em>.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-pct.png" alt=""><div><b data-t="b3">Extra Coin Packages</b><span data-t="b3s">Up to +50% Bonus coins.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-gem.png" alt=""><div><b data-t="b4">Exclusive Author Gifts</b><span data-t="b4s">Express your support and be different.</span></div></div>
+    </div>
+    <div class="s-pfoot">
+      <div class="s-tl"><div><i></i><b data-t="tl1">Today</b><span data-t="tl1s">Plus unlocked, free</span></div><div><i></i><b data-t="tl2">Day 2</b><span data-t="tl2s">We remind you</span></div><div><i></i><b data-t="tl3">Day 3</b><span data-t="tl3s">$9.99 a month</span></div></div>
+      <p class="s-terms" data-t="pw_terms">3 free days, after $9.99 month <span>/ Only US$2.49 week</span></p>
+      <button class="s-cta" data-go="done"><span data-t="pw_cta">Try for free</span></button>
+      <div class="s-legal"><span data-t="lg1">Privacy Policy</span><span data-t="lg2">Terms &amp; Conditions</span><span data-t="lg3">Restore purchase</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="scr sheet" data-id="offer">
+  <div class="s-dim" data-go="done"></div>
+  <div class="s-sheet">
+    <button class="s-x" data-go="done" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+    <p class="s-off-k" data-t="of_k">BEFORE YOU GO</p>
+    <h2 class="s-off-t" data-t="of_t">Start smaller: Plus with 300 coins to spend today</h2>
+    <div class="s-pack"><em data-t="of_tag">Starter</em><img src="assets/crop/plus-icon.png" alt=""><div><b data-t="of_n">AlphaNovel Plus + 300 Coins</b><span data-t="of_s">about 27 chapters, right now</span></div><strong data-t="of_p">$2.99</strong></div>
+    <ul class="s-offl">
+      <li><img src="assets/crop/b-x2.png" alt=""><span data-t="of_1">Every Plus bonus, doubled daily reading and check-in included</span></li>
+      <li><img src="assets/crop/b-pct.png" alt=""><span data-t="of_2">300 coins added the moment you subscribe</span></li>
+    </ul>
+    <button class="s-cta s-pink" data-go="done"><span data-t="of_cta">Get Plus + 300 Coins</span></button>
+    <p class="s-cf" data-t="of_cf">Purchased Coins don't expire, are non-transferable, and can be used for reading.</p>
+  </div>
+</section>
+
+<section class="scr s-done" data-id="done">
+  <button class="s-x" data-jumpto="join" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  <div class="s-pw">
+    <img class="s-pico" src="assets/crop/plus-icon.png" alt="">
+    <div class="s-pname"><span data-t="dn_t1">You are all</span> <span class="s-hl" data-t="dn_t2">set!</span><img src="assets/crop/plus-badge.png" alt=""></div>
+    <p class="s-psub" data-t="dn_p">Thank you for subscribing to AlphaNovel Plus. Here's what is now unlocked.</p>
+    <div class="s-bens">
+      <div class="s-ben"><img src="assets/crop/b-x2.png" alt=""><div><b data-t="b1">Doubled Daily Reading</b><span data-t="dn_b1">Earn up to 3900 Coins from daily reading.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-x2y.png" alt=""><div><b data-t="b2">Doubled Daily Check-in</b><span data-t="dn_b2">Earn up to 1240 Coins from daily check-in.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-pct.png" alt=""><div><b data-t="b3">Extra Coin Packages</b><span data-t="b3s">Up to +50% Bonus coins.</span></div></div>
+    </div>
+    <div class="s-pfoot" style="border-radius:0;background:none;padding-bottom:34px">
+      <p class="s-next"><span class="js-title">Chosen By The Lycan Prince</span></p>
+      <button class="s-cta" data-jumpto="join"><span data-t="pk_cta">Continue Reading</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- their paywall TODAY, rebuilt word for word from the recording (sd-25504) — aside: stills only, not in the flow -->
+<section class="scr" data-id="today" data-aside>
+  <button class="s-x" aria-label="Close"><svg viewBox="0 0 20 20"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+  <div class="s-pw">
+    <img class="s-pico" src="assets/crop/plus-icon.png" alt="">
+    <div class="s-pname">AlphaNovel <span class="s-hl">Plus</span><img src="assets/crop/plus-badge.png" alt=""></div>
+    <p class="s-psub" data-t="td_sub">Try for free plus experience and Get Doubled as many bonuses!</p>
+    <div class="s-bens" style="margin-top:16px">
+      <div class="s-ben"><img src="assets/crop/b-x2.png" alt=""><div><b data-t="b1">Doubled Daily Reading</b><span data-t="dn_b1">Earn up to 3900 Coins from daily reading.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-x2y.png" alt=""><div><b data-t="b2">Doubled Daily Check-in</b><span data-t="dn_b2">Earn up to 1240 Coins from daily check-in.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-pct.png" alt=""><div><b data-t="b3">Extra Coin Packages</b><span data-t="b3s">Up to +50% Bonus coins.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-gem.png" alt=""><div><b data-t="b4">Exclusive Author Gifts</b><span data-t="b4s">Express your support and be different.</span></div></div>
+      <div class="s-ben"><img src="assets/crop/b-icon.png" alt=""><div><b data-t="b5">App Icon</b><span data-t="b5s">Choose from a selection of AlphaNovel app icons for your homescreen.</span></div></div>
+    </div>
+    <div class="s-pfoot">
+      <p class="s-terms" data-t="pw_terms">3 free days, after $9.99 month <span>/ Only US$2.49 week</span></p>
+      <button class="s-cta"><span data-t="pw_cta">Try for free</span></button>
+      <div class="s-legal"><span data-t="lg1">Privacy Policy</span><span data-t="lg2">Terms &amp; Conditions</span><span data-t="lg3">Restore purchase</span></div>
+    </div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Close the paywall with ✕ to see idea 4. Pick Español on the language screen to switch the whole flow.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· AlphaNovel</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "AlphaNovel",
+ "state": {
+  "topics": [
+   "werewolf",
+   "billionaire"
+  ],
+  "ld": 100
+ },
+ "labels": {},
+ "chips": {
+  "join": "Sign-up",
+  "survey": "Survey",
+  "lang": "Language",
+  "topics": "Topics",
+  "loader": "Loader",
+  "picks": "Novels for you",
+  "teaser": "Chapter one",
+  "paywall": "Plus paywall",
+  "offer": "On close",
+  "done": "All set"
+ },
+ "hero": [
+  "picks",
+  "paywall",
+  "teaser"
+ ],
+ "outcome": {
+  "cr": "+30%",
+  "arpu": "+25%"
+ },
+ "ideas": [
+  {
+   "screen": "teaser",
+   "title": "Show Plus inside the onboarding, at the end of chapter one",
+   "what": "Today the 11-step onboarding ends in the feed with no paywall, and Plus only appears under Profile › <code>Upgrade to Plus</code>. Offer the 3 free days where a new reader has just finished the first page of their top pick and wants the next one.",
+   "impact": "+15–30%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "picks",
+   "title": "Use the answers you collect",
+   "what": "You ask five questions, show “100% of novels analyzed…” and then open a generic feed. Name the topics they picked, open the novel that matches them best, and carry its title onto the paywall headline.",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "paywall",
+   "title": "Sell Plus in chapters, with 84K ratings behind it",
+   "what": "“Up to 3900 Coins from daily reading” makes readers do coin maths. At 11 coins a chapter that is about 350 chapters, so say so. Add your 4.7★ from 84K ratings and show the day the $9.99 starts.",
+   "impact": "+5–10%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "Closing Plus today just drops readers back into the app. Offer your existing <code>AlphaNovel Plus + 300 Coins</code> at $2.99 instead: a smaller first step, with coins they can spend on the novel they just started.",
+   "impact": "+5–10%",
+   "il": "ARPU"
+  },
+  {
+   "screen": "topics",
+   "title": "Ask two questions, not five",
+   "what": "Gender, age and “How did you hear about AlphaNovel?” don’t change which novels a reader sees. Keep language and topics before the first chapter and ask the rest later, in Profile.",
+   "impact": "+3–8%",
+   "il": "CR to purchase"
+  }
+ ],
+ "panel": {
+  "join": {
+   "idea": 0,
+   "t": "Sign-up, kept as is",
+   "why": "Your sign-up, name and avatar steps stay first and unchanged. The survey starts right after them."
+  },
+  "survey": {
+   "idea": 0,
+   "t": "The survey intro, kept",
+   "why": "Your copy and art, word for word. It now leads into two questions instead of five."
+  },
+  "lang": {
+   "idea": 0,
+   "t": "Language, question 1 of 2",
+   "why": "Kept as is. Picking Español switches the whole prototype to Spanish, with Spain App Store prices."
+  },
+  "topics": {
+   "idea": 5,
+   "t": "Ask two questions, not five",
+   "why": "<b>Try</b> keeping only language and topics before the first chapter, <b>because</b> gender, age and acquisition source don’t change what a reader sees, and every step before value loses people.",
+   "iv": "CR +3–8%",
+   "il": "to purchase, from more people reaching chapter one"
+  },
+  "loader": {
+   "idea": 0,
+   "t": "The loader names their picks",
+   "why": "Same ring and book. The lines now say which topics it’s matching, so the result feels earned."
+  },
+  "picks": {
+   "idea": 2,
+   "t": "Use the answers you collect",
+   "why": "<b>Try</b> naming the topics they picked and opening the novel that matches them best, <b>because</b> a result that visibly comes from their answers makes the next ask feel like part of their story.",
+   "iv": "CR +5–15%",
+   "il": "to purchase",
+   "also": "The novel picked here carries onto the first page and the paywall headline."
+  },
+  "teaser": {
+   "idea": 1,
+   "t": "Show Plus at the end of chapter one",
+   "why": "<b>Try</b> offering Plus’s 3 free days right where the first page of their pick fades out, <b>because</b> today the onboarding has no paywall and Plus sits behind Profile, where new readers rarely look.",
+   "iv": "CR +15–30%",
+   "il": "to purchase"
+  },
+  "paywall": {
+   "idea": 3,
+   "t": "Sell Plus in chapters, with proof",
+   "why": "<b>Try</b> turning coins into chapters, adding 4.7★ from 84K ratings and a day-by-day trial line, <b>because</b> readers think in chapters, and “3900 coins” makes them do maths as they decide.",
+   "iv": "CR +5–10%",
+   "il": "to purchase",
+   "also": "Idea 2 shows here too: the headline names the novel they just started."
+  },
+  "offer": {
+   "idea": 4,
+   "t": "Catch the people who close it",
+   "why": "<b>Try</b> offering your $2.99 AlphaNovel Plus + 300 Coins when someone closes the paywall, <b>because</b> a smaller first step with coins to spend now wins back readers who said no to $9.99 a month.",
+   "iv": "ARPU +5–10%",
+   "il": "from readers who close the paywall"
+  },
+  "done": {
+   "idea": 0,
+   "t": "You are all set, kept",
+   "why": "Your confirmation screen, word for word, plus one button straight back into the novel they started."
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "es",
+   "name": "Español · Spain prices"
+  }
+ ],
+ "i18n": {
+  "es": {
+   "join_t": "<span class=\"s-hl\">Únete</span> a AlphaNovel",
+   "join_p": "Disfruta de una selección de las mejores novelas contemporáneas",
+   "join_fb": "Continuar con Facebook",
+   "join_gg": "Continuar con Google",
+   "join_ap": "Continuar con Apple",
+   "join_mail": "Continuar con email",
+   "join_f1": "Al continuar, acepto la",
+   "join_f2": "Política de privacidad / Términos y condiciones",
+   "sv_t": "¡Hola, <span class=\"s-hl\">qué bien</span> verte en <span class=\"s-hl\">AlphaNovel!</span>",
+   "sv_p": "Responde un breve cuestionario para que podamos recomendarte las novelas más adecuadas para ti.",
+   "sv_time": "No te llevará más de ⏱ 1 minuto",
+   "sv_cta": "¡Empezar!",
+   "about": "Sobre ti",
+   "lang_q": "¿En qué idioma quieres leer novelas?",
+   "cont": "Continuar",
+   "prefs": "Tus preferencias",
+   "top_q": "¿Qué temas te gustan?",
+   "top_note": "Elige algunos y abriremos tu primera novela en la siguiente pantalla.",
+   "tp_teen": "Adolescentes",
+   "tp_imposter": "Impostor",
+   "tp_billionaire": "Multimillonario",
+   "tp_erotic": "Erótica",
+   "tp_boss": "Jefe / CEO",
+   "tp_abusive": "Amor abusivo",
+   "tp_pack": "Manada",
+   "tp_weak": "De débil a fuerte",
+   "tp_werewolf": "Hombre lobo",
+   "tp_badboy": "Chico malo",
+   "tp_reunion": "Reencuentro",
+   "tp_goodgirl": "Chica buena",
+   "tp_sweet": "Tierno",
+   "tp_powerful": "Pareja poderosa",
+   "ld_t": "Eligiendo las novelas adecuadas para ti",
+   "ld_pct": "% de novelas analizadas...",
+   "pk_bar": "Novelas para ti",
+   "pk_why": "Porque elegiste",
+   "views": "Vistas",
+   "rating": "Valoración",
+   "match": "Coincide",
+   "pk_cta": "Seguir leyendo",
+   "tz_t": "¿Quieres saber qué pasa después?",
+   "tz_p": "El capítulo uno va por nuestra cuenta. Plus duplica las monedas que ganas cada día, así que los siguientes también.",
+   "tz_row": "3 días gratis · monedas diarias dobles",
+   "tz_free": "GRATIS",
+   "pw_sub1": "Sigue leyendo",
+   "pw_sub2": ", con bonos dobles en todas las novelas.",
+   "pw_count": "· 2.048 valoraciones en el App Store",
+   "b1": "Lectura diaria doble",
+   "b1s": "Hasta 3900 monedas por leer cada día: <em>unos 350 capítulos</em>.",
+   "b2": "Check-in diario doble",
+   "b2s": "Hasta 1240 monedas por el check-in diario: <em>unos 110 más</em>.",
+   "b3": "Paquetes de monedas extra",
+   "b3s": "Hasta +50 % de monedas extra.",
+   "b4": "Regalos exclusivos de autor",
+   "b4s": "Muestra tu apoyo y sé diferente.",
+   "b5": "Icono de la app",
+   "b5s": "Elige entre varios iconos de AlphaNovel para tu pantalla de inicio.",
+   "tl1": "Hoy",
+   "tl1s": "Plus activo, gratis",
+   "tl2": "Día 2",
+   "tl2s": "Te lo recordamos",
+   "tl3": "Día 3",
+   "tl3s": "{mo} al mes",
+   "pw_terms": "3 días gratis, después {mo} al mes <span>/ Solo {wk} a la semana</span>",
+   "pw_cta": "Probar gratis",
+   "lg1": "Privacidad",
+   "lg2": "Términos y condiciones",
+   "lg3": "Restaurar compra",
+   "of_k": "ANTES DE IRTE",
+   "of_t": "Empieza con menos: Plus con 300 monedas para hoy",
+   "of_tag": "Para empezar",
+   "of_n": "AlphaNovel Plus + 300 Monedas",
+   "of_s": "unos 27 capítulos, ya mismo",
+   "of_p": "{off}",
+   "of_1": "Todos los bonos de Plus, con lectura y check-in dobles",
+   "of_2": "300 monedas en cuanto te suscribes",
+   "of_cta": "Obtener Plus + 300 monedas",
+   "of_cf": "Las monedas compradas no caducan, no son transferibles y se pueden usar para leer.",
+   "dn_t1": "¡Todo",
+   "dn_t2": "listo!",
+   "dn_p": "Gracias por suscribirte a AlphaNovel Plus. Esto es lo que acabas de desbloquear.",
+   "dn_b1": "Gana hasta 3900 monedas por leer cada día.",
+   "dn_b2": "Gana hasta 1240 monedas por el check-in diario.",
+   "dn_cta": "Seguir leyendo",
+   "td_sub": "¡Prueba gratis la experiencia Plus y consigue el doble de bonos!"
+  }
+ },
+ "prices": {
+  "es": {
+   "mo": "9,99 €",
+   "wk": "2,49 €",
+   "off": "2,99 €"
+  }
+ },
+ "labelsI18n": {},
+ "liveUrl": "https://eddieatadapty.github.io/alphanovel-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Your Plus paywall, today and proposed.",
+  "sub": "Same layout, same art, same price.",
+  "todayCap": "rebuilt from your recording",
+  "rows": [
+   {
+    "h": "Where it shows",
+    "idea": 1,
+    "was": "Only from Profile › Upgrade to Plus",
+    "now": "In onboarding, after chapter one of their pick"
+   },
+   {
+    "h": "Headline",
+    "idea": 2,
+    "was": "Try for free plus experience and Get Doubled as many bonuses!",
+    "now": "Keep reading Chosen By The Lycan Prince, with doubled bonuses"
+   },
+   {
+    "h": "Benefits",
+    "idea": 3,
+    "was": "Earn up to 3900 Coins from daily reading.",
+    "now": "Up to 3900 coins: about 350 chapters"
+   },
+   {
+    "h": "Proof and trial",
+    "idea": 3,
+    "was": "No rating; one line of terms",
+    "now": "4.7★ · 84K ratings, and a Today · Day 2 · Day 3 line"
+   },
+   {
+    "h": "On close",
+    "idea": 4,
+    "was": "Back into the app",
+    "now": "AlphaNovel Plus + 300 Coins for $2.99"
+   }
+  ],
+  "kept": "Kept: the Plus icon, the benefit cards and their art, 3 free days then $9.99 a month, and the Try for free button."
+ },
+ "tour": {
+  "introLede": "Five ideas to turn more readers into Plus subscribers.",
+  "endTitle": "Five ideas, built into your own onboarding.",
+  "segments": [
+   {
+    "id": "join",
+    "d": 3000,
+    "tap": [
+     ".s-ap",
+     2400
+    ]
+   },
+   {
+    "id": "survey",
+    "d": 1800,
+    "tap": [
+     ".s-cta",
+     1300
+    ]
+   },
+   {
+    "id": "lang",
+    "d": 1900,
+    "tap": [
+     ".s-cta",
+     1400
+    ]
+   },
+   {
+    "id": "topics",
+    "d": 1600,
+    "st": {
+     "topics": [
+      "werewolf"
+     ]
+    },
+    "tap": [
+     "[data-toggle=\"topics:billionaire\"]",
+     1100
+    ]
+   },
+   {
+    "id": "topics",
+    "d": 1500,
+    "st": {
+     "topics": [
+      "werewolf",
+      "billionaire"
+     ]
+    },
+    "tap": [
+     ".s-cta",
+     1000
+    ]
+   },
+   {
+    "id": "loader",
+    "d": 1300,
+    "st": {
+     "ld": 40
+    }
+   },
+   {
+    "id": "loader",
+    "d": 1200,
+    "st": {
+     "ld": 100
+    }
+   },
+   {
+    "id": "picks",
+    "d": 3000,
+    "tap": [
+     ".s-cta",
+     2500
+    ]
+   },
+   {
+    "id": "teaser",
+    "d": 3200,
+    "tap": [
+     ".s-cta",
+     2700
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3600,
+    "tap": [
+     ".s-x",
+     3100
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 3000,
+    "tap": [
+     ".s-cta",
+     2500
+    ]
+   },
+   {
+    "id": "done",
+    "d": 1800
+   },
+   {
+    "id": "done",
+    "d": 2600,
+    "end": true
+   }
+  ],
+  "captions": {
+   "join": {
+    "k": "Context",
+    "t": "Sign-up, kept as is",
+    "l": "Your first screens stay exactly as they are."
+   },
+   "survey": {
+    "k": "Context",
+    "t": "Your survey intro",
+    "l": "Word for word. It now leads to two questions."
+   },
+   "lang": {
+    "k": "Context",
+    "t": "Language first",
+    "l": "Your own question. Español switches the whole prototype."
+   },
+   "topics": {
+    "n": 5,
+    "t": "Two questions, not five",
+    "l": "Language and topics are the ones that change what they read.",
+    "o": "+3–8%",
+    "ol": "CR to purchase"
+   },
+   "loader": {
+    "k": "Context",
+    "t": "The loader names their picks",
+    "l": "It says which topics it is matching."
+   },
+   "picks": {
+    "n": 2,
+    "t": "Use the answers you collect",
+    "l": "Their topics open the novel that fits them best.",
+    "o": "+5–15%",
+    "ol": "CR to purchase"
+   },
+   "teaser": {
+    "n": 1,
+    "t": "Plus, at the end of chapter one",
+    "l": "Today the onboarding has no paywall at all.",
+    "o": "+15–30%",
+    "ol": "CR to purchase"
+   },
+   "paywall": {
+    "n": 3,
+    "t": "Plus in chapters, with proof",
+    "l": "3900 coins is about 350 chapters. 4.7★ from 84K ratings.",
+    "o": "+5–10%",
+    "ol": "CR to purchase"
+   },
+   "offer": {
+    "n": 4,
+    "t": "Catch the people who close it",
+    "l": "Your $2.99 Plus + 300 Coins, instead of a way out.",
+    "o": "+5–10%",
+    "ol": "ARPU"
+   },
+   "done": {
+    "k": "Context",
+    "t": "Straight back to the story",
+    "l": "Your confirmation screen, then chapter two."
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for AlphaNovel. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$9.99 a month after 3 free days",
+     "dd": "Your live Plus paywall, “3 free days, after $9.99 month / Only US$2.49 week” (<a href=\"https://screensdesign.com/apps/alphanovel-novels-stories/?vs=25504\" target=\"_blank\" rel=\"noopener\">recording</a>), and AlphaNovel Plus $9.99 in the <a href=\"https://apps.apple.com/us/app/alphanovel-novels-stories/id1585933612\" target=\"_blank\" rel=\"noopener\">App Store</a> in-app purchase list."
+    },
+    {
+     "dt": "$2.99 AlphaNovel Plus + 300 Coins",
+     "dd": "App Store in-app purchase list (US). The term it covers isn’t public, so the offer screen doesn’t state one."
+    },
+    {
+     "dt": "9,99 € · 2,49 € · 2,99 € (Spain)",
+     "dd": "<a href=\"https://apps.apple.com/es/app/alphanovel-romanzi-e-storie/id1585933612\" target=\"_blank\" rel=\"noopener\">Spain storefront</a>: AlphaNovel Plus 9,99 €, AlphaNovel Plus + 300 Monedas 2,99 €. 2,49 € a week is 9,99 € ÷ 4, as your US copy does."
+    },
+    {
+     "dt": "Not used",
+     "dd": "$6.99 AlphaNovel Plus and $9.99 AlphaNovel Plus + 1500 Coins (7,99 € / 9,99 € in Spain): listed, but not seen on a live paywall. Coin packs $0.99–$29.99."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.7★ · 84K ratings",
+     "dd": "App Store US: 4.69 from 83,700 ratings. Spain: 4.53 from 2,048 ratings, shown in Spanish as 4,5 · 2.048."
+    },
+    {
+     "dt": "Views and ratings on the novel pages",
+     "dd": "Your own novel pages in the recording: Chosen By The Lycan Prince 13K views, 6.0; The Devil’s Fire 80.3K views, 7.3 (your 10-point scale)."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Plus benefits",
+     "dd": "Word for word from your Plus paywall: Doubled Daily Reading (up to 3900 Coins), Doubled Daily Check-in (up to 1240), Extra Coin Packages (+50%), Exclusive Author Gifts, App Icon."
+    },
+    {
+     "dt": "“About 350 chapters”",
+     "dd": "Our estimate: 3,900 ÷ 11 coins, the chapter price on your Locked screen (The Devil). 1,240 ÷ 11 ≈ 110 and 300 ÷ 11 ≈ 27. Chapter prices vary, so this needs your real average."
+    },
+    {
+     "dt": "Covers and opening lines",
+     "dd": "From your recording (Chosen By The Lycan Prince, The Devil’s Fire) and App Store screenshots (The Virgin Wife, Her Forbidden Alpha). <i>El fuego del diablo</i> is the Spanish edition on the author’s profile."
+    },
+    {
+     "dt": "Day 2 reminder",
+     "dd": "Proposed, not something we saw: the trial line promises a reminder before day 3, which needs a push or email from you."
+    },
+    {
+     "dt": "Spanish copy",
+     "dd": "Our translation, not yours. Spanish is the second language your own onboarding offers."
+    },
+    {
+     "dt": "Onboarding order",
+     "dd": "Your <a href=\"https://screensdesign.com/apps/alphanovel-novels-stories/?av=418&flow=63848&ts=0.000\" target=\"_blank\" rel=\"noopener\">recorded onboarding</a>: sign-up, name, avatar, survey, 5 questions, 2 permission prompts, loader, feed. Gender, age, source and the notification ask move out of the prototype, not out of the app."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours",
+     "dd": "Sampled off your recorded dark screens: background #121013, cards #201e21, buttons #7d6eff, pink #f295a8. The audit’s yellow is your site’s --highlighter #f7f661."
+    },
+    {
+     "dt": "Type",
+     "dd": "Inter: one of the fonts your reader offers, and the closest Google family to the system font your screens use."
+    },
+    {
+     "dt": "Art",
+     "dd": "Plus icon, benefit badges, 3D characters, flags and the book icon are cut from your recorded screens. Nothing is stock. The covers keep your “Recommended” tags."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your numbers and tests",
+     "dd": "Conversion, trial-to-paid, test history, and whether Plus reaches new readers another way (a push, a chapter-lock upsell). We worked from one <a href=\"https://screensdesign.com/apps/alphanovel-novels-stories/\" target=\"_blank\" rel=\"noopener\">recorded session</a> and your App Store listing."
+    }
+   ]
+  }
+ ]
+}
+
+</script>
+
+<script>
+/* AlphaNovel hooks: the topics pick the novel (picks → first page → paywall headline), the loader names the topics,
+   and the Spanish copy for everything that is built here rather than in data-t. */
+var TOPIC = {
+  en: {teen:'Teen', imposter:'Imposter', billionaire:'Billionaire', erotic:'Erotic', boss:'Boss / CEO', abusive:'Abusive Love', pack:'Pack', weak:'Weak to Strong', werewolf:'Werewolf', badboy:'Badboy', reunion:'Reunion', goodgirl:'Good Girl', sweet:'Sweet', bdsm:'BDSM', luna:'Luna', powerful:'Powerful Couple'},
+  es: {teen:'Adolescentes', imposter:'Impostor', billionaire:'Multimillonario', erotic:'Erótica', boss:'Jefe / CEO', abusive:'Amor abusivo', pack:'Manada', weak:'De débil a fuerte', werewolf:'Hombre lobo', badboy:'Chico malo', reunion:'Reencuentro', goodgirl:'Chica buena', sweet:'Tierno', bdsm:'BDSM', luna:'Luna', powerful:'Pareja poderosa'}
+};
+/* every image path used from JS, written out so publish-gh.sh copies them */
+var COVERS = {lycan:'assets/crop/cover-lycan.png', devil:'assets/crop/cover-devil.png', virgin:'assets/crop/cover-virgin.png', alpha:'assets/crop/cover-alpha.png'};
+/* their own novel pages (recording) — title, meta, views, rating on their 10-point scale, opening lines */
+var BOOKS = {
+  lycan: {topics:['werewolf','pack','luna','weak','teen','reunion','sweet','goodgirl'], views:'13K', rate:'6.0',
+    en:{t:'Chosen By The Lycan Prince', meta:'Romance | 103 Chapters | Ongoing | 18+', ch:'CHAPTER ONE',
+        ex:['What if I put an end to it? An end to the grief, the suffering, the pain, the shame, the humiliation??', 'I tried, I hoped to see the light at the end of the tunnel, but this tunnel has no end. My tear glands are empty, my soul is shattered…']},
+    es:{t:'Chosen By The Lycan Prince', meta:'Romance | 103 capítulos | En curso | 18+', ch:'CAPÍTULO UNO',
+        ex:['¿Y si le pongo fin? ¿Un fin al dolor, al sufrimiento, a la pena, a la vergüenza, a la humillación?', 'Lo intenté, quise ver la luz al final del túnel, pero este túnel no tiene final. Ya no me quedan lágrimas, tengo el alma rota…']}},
+  devil: {topics:['billionaire','boss','badboy','abusive','erotic','bdsm','powerful','imposter'], views:'80.3K', rate:'7.3',
+    en:{t:"The Devil's Fire", meta:'Billionaire/CEO | 148 Chapters | Completed | 18+', ch:'PROLOGUE · DAMIANO',
+        ex:['I flung the car door open, sprinting out of there before it could even come to a stop. The branches under my shoes snapped, and trees were flying past me as I ran with all my might deep into the woods.', 'I had to get to her before it was too late.', 'My heart stopped beating. I was late.']},
+    es:{t:'El fuego del diablo', meta:'Multimillonario/CEO | 148 capítulos | Completa | 18+', ch:'PRÓLOGO · DAMIANO',
+        ex:['Abrí la puerta del coche de golpe y salí corriendo antes de que se detuviera. Las ramas crujían bajo mis zapatos y los árboles pasaban volando mientras corría con todas mis fuerzas hacia el bosque.', 'Tenía que llegar a ella antes de que fuera demasiado tarde.', 'Mi corazón dejó de latir. Llegaba tarde.']}}
+};
+var TXT = {
+  en: {line:function(t){ return 'Matching ' + t + ' stories'; }, open:'Opening chapter one of your top pick', rank:'Checking views and ratings',
+       fit:function(t){ return 'Picked from <b>' + t + '</b>. Chapter one is free, and it opens next.'; }, of:' of ', rating:'4.7'},
+  es: {line:function(t){ return 'Buscando historias de ' + t; }, open:'Abriendo el capítulo uno de tu favorita', rank:'Revisando vistas y valoraciones',
+       fit:function(t){ return 'Elegida por <b>' + t + '</b>. El capítulo uno es gratis y se abre ahora.'; }, of:' de ', rating:'4,5'}
+};
+function topBooks(S){
+  var t = S.topics || [];
+  function score(k){ return t.filter(function(x){ return BOOKS[k].topics.indexOf(x) > -1; }).length; }
+  var a = score('lycan') >= score('devil') ? ['lycan', 'devil'] : ['devil', 'lycan'];
+  var side = t.some(function(x){ return ['billionaire', 'boss', 'sweet', 'goodgirl', 'reunion'].indexOf(x) > -1; }) ? 'virgin' : 'alpha';
+  return {top: a[0], second: a[1], side: side, match: score(a[0])};
+}
+function setAll(sel, html){ document.querySelectorAll(sel).forEach(function(el){ el.innerHTML = html; }); }
+window.onSync = function(S){
+  var L = S.lang === 'es' ? 'es' : 'en', T = TXT[L], names = (S.topics || []).map(function(k){ return TOPIC[L][k]; });
+  var B = topBooks(S), bk = BOOKS[B.top], d = bk[L];
+  var two = names.slice(0, 2).join(' · ') || TOPIC[L].werewolf;
+  setAll('.js-title', d.t); setAll('.js-meta', d.meta); setAll('.js-views', bk.views); setAll('.js-rate', bk.rate);
+  setAll('.js-ch', d.ch); setAll('.js-rating', T.rating);
+  setAll('.js-first', '<p>' + d.ex[0] + '</p>');
+  document.querySelectorAll('.js-cover').forEach(function(el){ el.src = COVERS[B.top]; });
+  setAll('.js-excerpt', d.ex.map(function(p){ return '<p>' + p + '</p>'; }).join(''));
+  setAll('.js-fit', T.fit(names.slice(0, 3).join(', ')));
+  var pk = document.getElementById('pkTopics'); if (pk) pk.innerHTML = names.slice(0, 3).map(function(n){ return '<b>' + n + '</b>'; }).join('');
+  document.getElementById('pkC0').src = COVERS[B.top]; document.getElementById('pkC1').src = COVERS[B.second]; document.getElementById('pkC2').src = COVERS[B.side];
+  /* loader: S.ld (0–100) drives the ring, the percent and which lines are lit */
+  var ld = S.ld == null ? 100 : S.ld, lines = [T.line(names[0] || TOPIC[L].werewolf), names[1] ? T.line(names[1]) : T.rank, T.open];
+  document.getElementById('ldRing').style.setProperty('--p', ld);
+  document.getElementById('ldPct').textContent = Math.round(ld);
+  document.querySelectorAll('#ldLines li').forEach(function(li, i){ li.querySelector('span').textContent = lines[i]; li.classList.toggle('on', ld >= [25, 60, 95][i]); });
+};
+var ldTimer = null;
+window.onEnter = function(id, S){
+  clearInterval(ldTimer);
+  if (id !== 'loader' || SHOT) return;
+  S.ld = 0; sync();
+  var t0 = Date.now();
+  ldTimer = setInterval(function(){
+    S.ld = Math.min(100, (Date.now() - t0) / 26); sync();
+    if (S.ld >= 100) { clearInterval(ldTimer); setTimeout(function(){ if (cur === 'loader') { S.ld = 100; go('picks'); } }, 500); }
+  }, 60);
+};
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
